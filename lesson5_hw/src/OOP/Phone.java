@@ -7,16 +7,26 @@ public class Phone extends Device{
     private String model;
     private double weight;
 
-    public Phone(String model, double weight) {
-        this.model = model;
-        this.weight = weight;
+//    public Phone(String model, double weight) {
+//        this.model = model;
+//        this.weight = weight;
+//    }
+
+
+//    public Phone(int number, String model, double weight) {
+//        this(model,weight);
+//        this.number = number;
+//
+//    }
+
+    public Phone(Builder builder) {
+        this.number = builder.number;
+        this.model = builder.model;
+        this.weight = builder.weight;
     }
 
-
-    public Phone(int number, String model, double weight) {
-        this(model,weight);
-        this.number = number;
-
+    public static Builder builder() {
+        return new Phone.Builder();
     }
 
     public int getNumber() {
@@ -47,7 +57,16 @@ public class Phone extends Device{
         System.out.printf("Call from %s%n", callerName);
     }
 
-    public void receiveCall(String callerName, int callerNumber){
+    public void receiveCall(String callerName, int callerNumber) throws CustomException {
+
+        char[] chars = callerName.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for(char c : chars){
+            if(Character.isDigit(c)){
+                sb.append(c);
+            }
+        }
+        if(!sb.isEmpty()) throw new CustomException();
         System.out.printf("Call from %s%nwith number:%d", callerName, callerNumber);
     }
 
@@ -63,6 +82,36 @@ public class Phone extends Device{
 
     @Override
     public String toString() {
-        return format("Phone [deviceName: %s, model: %s, number: %d, weight: %f]", getDeviceName(), this.model, this.number, this.weight);
+        return format("Phone [model: %s, number: %d, weight: %f]", model, number, weight);
+    }
+
+    public static class Builder {
+
+        private int number;
+        private String model;
+        private double weight;
+
+        public Builder() {
+        }
+
+        public Builder withNumber(int number) {
+            this.number = number;
+            return this;
+        }
+
+        public Builder withModel(String model) {
+            this.model = model;
+            return this;
+        }
+
+        public Builder withWeight(double weight) {
+            this.weight = weight;
+            return this;
+        }
+
+
+        public Phone build() {
+            return new Phone(this);
+        }
     }
 }
